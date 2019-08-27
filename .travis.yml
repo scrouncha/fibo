@@ -1,0 +1,22 @@
+sudo: required
+services:
+ - docker
+
+before_install:
+ - docker build -t scrouncha/fibo-test -f ./client/Dockerfile.dev ./client
+
+script:
+ - docker run scrouncha/fibo-test npm test -- --coverage
+
+after_success:
+ - docker build -t scrouncha/fibo-client ./client
+ - docker build -t scrouncha/fibo-nginx ./nginx
+ - docker build -t scrouncha/fibo-server ./server
+ - docker build -t scrouncha/fibo-worker ./worker
+ # Log in to docker CLI
+ - echo "$DOCKER_PASSWORD" | docker login -u "DOCKER_ID" -- password-stdin
+ # Take images and push to docker hub
+ - docker push scrouncha/fibo-client
+ - docker push scrouncha/fibo-nginx
+ - docker push scrouncha/fibo-server
+ - docker push scrouncha/fibo-worker
