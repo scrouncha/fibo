@@ -23,7 +23,7 @@ after_success:
  - docker push scrouncha/fibo-worker
 
 deploy:
-  provider: elastibeanstalk
+  provider: elasticbeanstalk
   region: us-east-2
   app: fibo-docker
   env: FiboDocker-env
